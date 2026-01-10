@@ -5,7 +5,6 @@ namespace Backupg;
 use ZipArchive;
 use Throwable;
 use InvalidArgumentException;
-use RuntimeException;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -14,6 +13,11 @@ use RecursiveIteratorIterator;
  * Backup class
  * version 1
  * by Gawe007@github.com
+ * 
+ * @param string $targetPath folder to be zipped. A realpath is preferred.
+ * @param string|null $targetZipSaveLocation folder for the created zip to be saved. A realpath is preferred. If not spesified, the file will be saved at the alternative location.
+ * @param $customTargetFileName custom name for the created zip file.
+ * @param $replaceOldZip boolean flags for replace file if the generated zip has same filename with a file within the zip save location.
  */
 class Backup{
     private $targetDir;
@@ -26,8 +30,9 @@ class Backup{
     private string $zipPath = "";
 
     private bool $useCompressionOnZip = true;
+    private bool $replaceOldZip = false;
 
-    public function __construct(string $targetPath, string $targetZipSaveLocation, string|null $customTargetFileName)
+    public function __construct(string $targetPath, string $targetZipSaveLocation, string|null $customTargetFileName, bool $replaceOldZip = false)
     {
         $this->customName = $customTargetFileName ?? "";
         $this->setup_log();
@@ -36,6 +41,8 @@ class Backup{
                 $this->zipLocation = $targetZipSaveLocation;
             }
         }
+        $this->replaceOldZip = $replaceOldZip;
+
         $this->write_log("Backupg V.1.0 by gawe007@github.com");
         $this->write_log("-----------------------------------");
         $this->write_log("Starting Backup Process ".$this->customName);
@@ -207,6 +214,19 @@ class Backup{
         }
     }
 
+    // Helper: convert shorthand memory string to bytes
+    private function convertToBytes(string $val): int {
+            $val = trim($val);
+            $last = strtolower($val[strlen($val)-1]);
+            $num = (int) $val;
+            switch ($last) {
+                case 'g': return $num * 1024 * 1024 * 1024;
+                case 'm': return $num * 1024 * 1024;
+                case 'k': return $num * 1024;
+                default: return (int) $val;
+            }
+    }
+
     /**
      * Create a ZIP archive from an array of files produced by getFilesWithReadability.
      *
@@ -231,16 +251,26 @@ class Backup{
             }
         }
 
+        
         // Prepare filenames
         $date = date('Ymd_His');
-        $name = $this->customName ? "_".$this->customName : "";
-        $zipPath = $zipDir . DIRECTORY_SEPARATOR . $date . $name . '.zip';
+        if($this->replaceOldZip){
+            $name = $this->customName ? $this->customName : $date;
+            $zipPath = $zipDir . DIRECTORY_SEPARATOR .$name . '.zip';
+            if(file_exists($zipPath)){
+                unlink($zipPath);
+                $this->write_log("Old File Deleted");
+            }
+        }else{
+            $name = $this->customName ? $date . "_" . $this->customName : $date;
+            $zipPath = $zipDir . DIRECTORY_SEPARATOR .$name . '.zip';
+        }
 
         $this->write_log("ZIP process started. Target zip: $zipPath");
 
         $zip = new ZipArchive();
 
-        if ($zip->open($zipPath, ZipArchive::CREATE) !== true) {
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             $this->write_log("Failed to create zip archive at $zipPath");
             return false;
         }
@@ -250,18 +280,7 @@ class Backup{
             $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR);
         }
 
-        // Helper: convert shorthand memory string to bytes
-        function convertToBytes(string $val): int {
-            $val = trim($val);
-            $last = strtolower($val[strlen($val)-1]);
-            $num = (int) $val;
-            switch ($last) {
-                case 'g': return $num * 1024 * 1024 * 1024;
-                case 'm': return $num * 1024 * 1024;
-                case 'k': return $num * 1024;
-                default: return (int) $val;
-            }
-        }
+        
 
         // Parameters you can set
         $safetyFactor = 0.8; // start closing when usage > safetyFactor * target
@@ -269,13 +288,13 @@ class Backup{
 
         // Determine target bytes
         if (!empty($memoryCap)) {
-            $targetBytes = convertToBytes($memoryCap);
+            $targetBytes = $this->convertToBytes($memoryCap);
         } else {
             $iniLimit = ini_get('memory_limit');
             if ($iniLimit === false || $iniLimit === '-1') {
-                $targetBytes = convertToBytes($defaultCap);
+                $targetBytes = $this->convertToBytes($defaultCap);
             } else {
-                $targetBytes = convertToBytes($iniLimit);
+                $targetBytes = $this->convertToBytes($iniLimit);
             }
         }
         $thresholdBytes = (int) ($targetBytes * $safetyFactor);
