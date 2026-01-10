@@ -1,0 +1,20 @@
+{
+    "name": "pf3j4/backupg",
+    "description": "custom backup",
+    "type": "project",
+    "require": {
+        "symfony/mailer": ">=7.4",
+        "symfony/mime": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backupg\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gawe007",
+            "email": "ga12wijaya@gmail.com"
+        }
+    ]
+}
