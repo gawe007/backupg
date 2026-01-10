@@ -18,7 +18,7 @@ composer install
 ```
 
 ## Usage
-1. Build the script inside the 'public' folder.
+1. Build the script inside the `/public` folder.
 2. Execute the script via `terminal` or `command line`, ex:
    ```
    php -f "path/to/your/script.php"
@@ -51,4 +51,4 @@ use Backupg\Backup;
 ```
 
 ## Special Note
-'.htaccess' inside the 'public' folder is to prevent webaccess to the folder.
+`.htaccess` inside the `/public` folder is to prevent webaccess to the folder.
