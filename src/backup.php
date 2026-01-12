@@ -62,9 +62,11 @@ class Backup{
     private function start(): void {
         $this->getFiles();
         if($this->arrayFiles){
-            $this->zipPath = $this->createZipFromFiles($this->arrayFiles, $this->zipLocation, $this->targetDir);
+            if(!$this->zipPath = $this->createZipFromFiles($this->arrayFiles, $this->zipLocation, $this->targetDir)){
+                die("Error when zipping files. Backup Stopped...\n");
+            }
         }else{
-            die("Files returned zero. Backup Stopped...");
+            die("Files returned zero. Backup Stopped...\n");
         }
 
         $this->write_log("Backup Process Succeeded.");
@@ -91,7 +93,7 @@ class Backup{
             $this->arrayFiles = $filesInfo;
         } catch (Throwable $e) {
             $this->write_log('Top-level exception: ' . $e->getMessage(), $this->logFile);
-            $this->write_log("An error occurred while scanning directories. Check the log file for details." . PHP_EOL . "\n");
+            $this->write_log("An error occurred while scanning directories. Check the log file for details.");
             die("Backup Stopped...\n");
         }
     }
@@ -251,7 +253,6 @@ class Backup{
             }
         }
 
-        
         // Prepare filenames
         $date = date('Ymd_His');
         if($this->replaceOldZip){
@@ -280,9 +281,7 @@ class Backup{
             $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR);
         }
 
-        
-
-        // Parameters you can set
+        // Memory Safety Net : Stop when usage is 80%
         $safetyFactor = 0.8; // start closing when usage > safetyFactor * target
         $defaultCap = '256M'; // used when memory_limit is -1 or not parseable
 
