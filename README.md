@@ -89,21 +89,22 @@ Create the script inside `/public` folder.
    ```
 
 ## Accepted Parameters
-|        Name         |   Type   |
-|:...................:|:........:|
-|'BackupTargetFolder' | `string` | directory location to be zipped. Required.
-|'zipSaveLocation'    | `string` | directory location for the created zip to be saved.
-|'customZipName'      | `string?`| custom name for the created zip file.
-|'replace'            | `bool`   | flags for replace file. Default `false`.
-|'useCompression'     | `bool`   | flags of the zip compression. Default `true`.
-|'includeDotFile'     | `bool`   | flags for including files started with a dot. Default `false`.
-|'excludeDir'         | `array`  | excluded directory path. **Case Sensitive**
-|'excludeExtensions'  | `array`  | excluded file extension.
-|'includeExtensions'  | `array`  | included file extension.
-|'beforeDate'         | `string` | only files before this date will be read.
-|'afterDate'          | `string` | only files after this date will be read.
-|'memoryCap'          | `string` | memory threshold for the Zipping file process. To be converted with strtotime()
-|'autoStart'          | `bool`   | flags for Backupg process autoStart. Default `false`.
+|        Name         |   Type   | Value Example |
+| ------------------- | -------- | ------------- |
+|'BackupTargetFolder' | `string` | "path/dir"    |
+|'zipSaveLocation'    | `string` | "path/save"   |
+|'customZipName'      | `string?`| "backup1"     |
+|'replace'            | `bool`   | false         |
+|'useCompression'     | `bool`   | false         |
+|'includeDotFile'     | `bool`   | false         |
+|'excludeDir'         | `array`  | ['dir1','sa'] |
+|'excludeExtensions'  | `array`  | ['exe','dll'] |
+|'includeExtensions'  | `array`  | ['img','png'] |
+|'beforeDate'         | `string` | "2026-01-10"  |
+|'afterDate'          | `string` | "2026-01-01"  |
+|'memoryCap'          | `string` | "100M"        |
+|'autoStart'          | `bool`   | false         |
+
 `excludeExtensions` and `includeExtensions` cannot be used at the same time.
 Other or wrong value will be **ignored**.
 
