@@ -1,4 +1,4 @@
-# Backupgg 
+# Backupg
 Version 1.1
 PHP Zipping Class for files backup. Provided with symfony/mailer for notification.
 This class is to help creating a script to backup all files within a folder.
