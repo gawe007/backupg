@@ -91,7 +91,7 @@ Create the script inside `/public` folder.
 ## Accepted Parameters
 |        Name         |   Type   | Value Example |
 | ------------------- | -------- | ------------- |
-|'BackupTargetFolder' | `string` | "path/dir"    |
+|'backupTargetFolder' | `string` | "path/dir"    |
 |'zipSaveLocation'    | `string` | "path/save"   |
 |'customZipName'      | `string?`| "backup1"     |
 |'replace'            | `bool`   | false         |
