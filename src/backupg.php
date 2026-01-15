@@ -14,7 +14,7 @@ use RecursiveIteratorIterator;
  * by gawe007@github.com.
  * This class is designed to be run on both CLI and webviews. Doesn't accept inline input.
  * Accept an assosiative array of parameters: 
- * @param backupTargetdirectory' directory to be zipped. A realpath is preferred. Required.
+ * @param backupTargetDirectory' directory to be zipped. A realpath is preferred. Required.
  * @param zipSaveLocation directory for the created zip to be saved. A realpath is preferred. If not spesified, the file will be saved at the same dir with the executed script.
  * @param customZipName custom name for the created zip file.
  * @param replace boolean flags for replace file if the generated zip has same filename with a file within the zip save location.
@@ -46,7 +46,7 @@ class Backupg{
 
     // Allowed Parameter
     private array $allowedParam = [
-        'backupTargetdirectory' => 'string',
+        'backupTargetDirectory' => 'string',
         'zipSaveLocation' => 'string',
         'customZipName' => 'string?',
         'replace' => 'bool',
@@ -63,7 +63,7 @@ class Backupg{
 
     // Default Parameter value
     private array $data = [
-        'backupTargetdirectory' => '',
+        'backupTargetDirectory' => '',
         'zipSaveLocation' => '',
         'customZipName' => null,
         'replace' => false,
@@ -213,12 +213,12 @@ class Backupg{
     {
         $this->processStarted = true;
         $startAuto = ($this->data['autoStart']) ? 'started with autoStart' : 'started';
-        $this->write_log("Backupg V.1.0 by gawe007@github.com");
+        $this->write_log("Backupg V.1.1 by gawe007@github.com");
         $this->write_log("-----------------------------------");
         $this->write_log("Backup Process ".$this->data['customZipName']." ".$startAuto);
-        $this->write_log("Checking dir ". $this->data['backupTargetdirectory'] ."...");
-        if(!is_dir($this->data['backupTargetdirectory'])) {
-            $this->write_log("Dir : ".$this->data['backupTargetdirectory'] ." unreadable");
+        $this->write_log("Checking dir ". $this->data['backupTargetDirectory'] ."...");
+        if(!is_dir($this->data['backupTargetDirectory'])) {
+            $this->write_log("Dir : ".$this->data['backupTargetDirectory'] ." unreadable");
             $this->write_log("Backup Process Stopped...");
             die();
         }
@@ -227,7 +227,7 @@ class Backupg{
         $this->setup_date_filter();
         $this->readFiles();
         if($this->arrayFiles){
-            if(!$this->zipPath = $this->createZipFromFiles($this->arrayFiles, $this->data['zipSaveLocation'], $this->data['backupTargetdirectory'])){
+            if(!$this->zipPath = $this->createZipFromFiles($this->arrayFiles, $this->data['zipSaveLocation'], $this->data['backupTargetDirectory'])){
                 $this->write_log("Error when zipping files. Backup Process Stopped...");
                 die();
             }
@@ -248,7 +248,7 @@ class Backupg{
     {
        try {
             // Scan and get files with readability info
-            $filesInfo = $this->getFilesWithReadability($this->data['backupTargetdirectory'], true, $this->data['includeExtensions'], $this->data['includeDotFile'], $this->logFile);
+            $filesInfo = $this->getFilesWithReadability($this->data['backupTargetDirectory'], true, $this->data['includeExtensions'], $this->data['includeDotFile'], $this->logFile);
 
             // Display summary and a sample
             $total = count($filesInfo);

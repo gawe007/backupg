@@ -9,7 +9,7 @@ $target = realpath("D:/path/to/some/folder");
 $saveLocation = realpath("D:/path/to/save/location");
 
 $b = new Backupg([
-    'backupTargetFolder' => $target, 
+    'backupTargetDirectory' => $target, 
     'zipSaveLocation' => $saveLocation, 
     'customZipName' => "Backup 1",
     'replace' => true,
